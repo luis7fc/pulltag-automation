@@ -1,0 +1,22 @@
+{
+    "magnolia": {
+        "10red": 125,
+        "10blk": 100,
+        "8grn": 100,
+        "34flex": 100,
+        "rom103": 50,
+        "sf1base": 1,
+        "sf1hem": 1
+    },
+    "mission oaks": {
+        "10red": 100,
+        "10blk": 100,
+        "8grn": 100,
+        "34flex": 100,
+        "rom103": 50,
+        "sf1base": 1
+    },
+    "citrea 303": {
+        "8grn": 100
+    }
+}

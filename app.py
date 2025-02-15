@@ -1,13 +1,12 @@
 import streamlit as st
 import pandas as pd
-import json
 import os
 import io
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
-# Define the JSON file for storing opportunities
-OPPORTUNITY_FILE = "opportunity.json"
+# Define the CSV file for storing opportunities
+OPPORTUNITY_FILE = "opportunity.csv"
 
 # Default opportunities (ensuring first-time app startup loads correctly)
 DEFAULT_OPPORTUNITIES = {
@@ -32,27 +31,43 @@ DEFAULT_OPPORTUNITIES = {
     "trilogy nevina": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "sf1base": 1, "nailplt": 10, "34nstp": 25, "rom83": 25, "sf1dsa": 1}
 }
 
+
 # --- FUNCTIONS ---
 
-# Load opportunities from JSON or initialize defaults
+# Convert dictionary to DataFrame
+def dict_to_dataframe(opportunities):
+    data = []
+    for job, materials in opportunities.items():
+        for material, quantity in materials.items():
+            data.append([job, material, quantity])
+    return pd.DataFrame(data, columns=["Job Name", "Material", "Quantity"])
+
+# Convert DataFrame back to dictionary
+def dataframe_to_dict(df):
+    opportunities = {}
+    for _, row in df.iterrows():
+        job = row["Job Name"]
+        material = row["Material"]
+        quantity = int(row["Quantity"])
+
+        if job not in opportunities:
+            opportunities[job] = {}
+        opportunities[job][material] = quantity
+    return opportunities
+
+# Load opportunities from CSV or initialize defaults
 def load_opportunities():
     if os.path.exists(OPPORTUNITY_FILE):
-        try:
-            with open(OPPORTUNITY_FILE, "r") as f:
-                data = json.load(f)
-                if data and isinstance(data, dict):
-                    return data
-        except json.JSONDecodeError:
-            pass  # If JSON is corrupted, overwrite it with defaults
-    
-    # Overwrite `opportunity.json` with new defaults
-    save_opportunities(DEFAULT_OPPORTUNITIES)
-    return DEFAULT_OPPORTUNITIES  
+        df = pd.read_csv(OPPORTUNITY_FILE)
+        return dataframe_to_dict(df)
+    else:
+        save_opportunities(DEFAULT_OPPORTUNITIES)
+        return DEFAULT_OPPORTUNITIES  
 
-# Save opportunities to JSON
+# Save opportunities to CSV
 def save_opportunities(opportunities):
-    with open(OPPORTUNITY_FILE, "w") as f:
-        json.dump(opportunities, f, indent=4)
+    df = dict_to_dataframe(opportunities)
+    df.to_csv(OPPORTUNITY_FILE, index=False)
 
 # Function to generate a PDF report
 def generate_pdf(activities_dict):

@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import json
 import os
+import io
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 
 # Define the JSON file for storing opportunities
 OPPORTUNITY_FILE = "opportunity.json"
@@ -18,28 +21,71 @@ DEFAULT_OPPORTUNITIES = {
     "santa fe trail": {"10blk": 100, "10red": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom43": 35, "rom63": 25, "rom143": 25, "sf1base": 1, "qfp100": 1, "nailplt": 10, "34nstp": 25},
     "serenade": {"10blk": 100, "10red": 100, "8grn": 100, "184cshld": 25, "34flex": 100, "rom43": 35, "rom63": 25, "rom143": 25, "sf1base": 1, "qfp100": 1, "nailplt": 10, "34nstp": 25},
     "victory oaks": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom43": 35, "rom63": 25, "rom143": 25, "sf1base": 1, "qfp100": 1, "nailplt": 10, "34nstp": 25},
+    "wild oak": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "rom43": 35, "rom63": 25, "rom143": 25, "184cshld": 25, "sf1base": 1, "qfp100": 1, "34nstp": 25, "nailplt": 10},
+    "abbey park": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom43": 35, "rom63": 50, "rom143": 50, "sf1base": 2, "qfp100": 1, "nailplt": 10, "34nstp": 10, "sf1hem": 2},
+    "acres at copper heights": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom43": 35, "rom63": 25, "rom143": 25, "sf1base": 1, "qfp100": 1, "nailplt": 10, "34nstp": 25, "sf1hem": 1},
+    "canyon ridge at the preserve": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom43": 35, "rom63": 50, "rom143": 50, "sf1base": 2, "qfp100": 1, "nailplt": 10, "34nstp": 25, "sf1hem": 2},
+    "ella gardens east": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom43": 35, "rom63": 25, "rom143": 25, "sf1base": 1, "qfp100": 1, "nailplt": 10, "34nstp": 25, "sf1hem": 1},
+    "deauville 6389": {"10red": 200, "10blk": 200, "8grn": 150, "34flex": 100, "184cshld": 25, "sf1base": 2, "nailplt": 10, "34nstp": 25, "rom83": 50, "sf1dsa": 2},
+    "deauville 6339": {"10red": 150, "10blk": 150, "8grn": 100, "34flex": 100, "184cshld": 25, "sf1base": 2, "nailplt": 10, "34nstp": 25, "rom83": 50, "sf1dsa": 2},
+    "ivy gate at farmstead": {"sf1hem": 1, "34nstp": 25, "nailplt": 10, "qfp100": 1, "sf1base": 1, "rom143": 25, "rom63": 25, "rom43": 35, "184cshld": 25, "34flex": 100, "8grn": 100, "10red": 100, "10blk": 100},
+    "trilogy nevina": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "sf1base": 1, "nailplt": 10, "34nstp": 25, "rom83": 25, "sf1dsa": 1}
 }
 
-# Function to load opportunities from JSON or initialize defaults
+# --- FUNCTIONS ---
+
+# Load opportunities from JSON or initialize defaults
 def load_opportunities():
     if os.path.exists(OPPORTUNITY_FILE):
         try:
             with open(OPPORTUNITY_FILE, "r") as f:
                 data = json.load(f)
-                return data if data else DEFAULT_OPPORTUNITIES  # Use defaults if file is empty
+                if data:  # If the file is not empty, return data
+                    return data
         except json.JSONDecodeError:
-            return DEFAULT_OPPORTUNITIES  # Return defaults if JSON is corrupted
-    return DEFAULT_OPPORTUNITIES  # Return defaults if file doesn't exist
+            pass  # Corrupted file, fallback to defaults
+    # If file doesn't exist or is empty, use the new defaults and overwrite
+    save_opportunities(DEFAULT_OPPORTUNITIES)
+    return DEFAULT_OPPORTUNITIES  
 
-# Function to save opportunities to JSON
+# Save opportunities to JSON
 def save_opportunities(opportunities):
     with open(OPPORTUNITY_FILE, "w") as f:
         json.dump(opportunities, f, indent=4)
 
-# Ensure session state is properly initialized with the opportunity dictionary
+# Function to generate a PDF
+def generate_pdf(activities_dict):
+    buffer = io.BytesIO()
+    pdf = canvas.Canvas(buffer, pagesize=letter)
+    pdf.setFont("Helvetica", 10)
+
+    y_position = 750  # Start position for text
+
+    pdf.drawString(100, 780, "Activities Dictionary Report")
+    pdf.line(100, 775, 500, 775)  # Underline
+
+    for activity, materials in activities_dict.items():
+        pdf.drawString(100, y_position, f"{activity}:")
+        y_position -= 15
+        if isinstance(materials, dict):
+            for material, quantity in materials.items():
+                pdf.drawString(120, y_position, f"- {material}: {quantity}")
+                y_position -= 15
+
+        y_position -= 10  # Extra space between jobs
+
+        if y_position < 50:  # Prevent text from running off the page
+            pdf.showPage()
+            y_position = 750
+
+    pdf.save()
+    buffer.seek(0)
+    return buffer
+
+# --- INITIALIZATION ---
+# Ensure session state is properly initialized with the updated opportunity dictionary
 if "opportunity" not in st.session_state:
     st.session_state.opportunity = load_opportunities()
-    save_opportunities(st.session_state.opportunity)  # Save to file to ensure persistence
 
 # --- UI ELEMENTS ---
 st.title("📊 Job Lot Processor & Opportunity Manager")
@@ -94,47 +140,51 @@ st.subheader("📂 Upload Excel File for Job Processing")
 uploaded_file = st.file_uploader("Upload an Excel file", type=["xlsx"])
 
 if uploaded_file:
-    try:
-        df = pd.read_excel(uploaded_file, engine="openpyxl")
+    df = pd.read_excel(uploaded_file, engine="openpyxl")
 
-        # Normalize column names to lowercase (avoid case-sensitivity issues)
-        df.columns = df.columns.str.strip().str.lower()
+    # Normalize column names to lowercase (avoid case-sensitivity issues)
+    df.columns = df.columns.str.strip().str.lower()
 
-        # Required columns
-        required_columns = {"lot #", "job name", "job number", "battery"}
-        missing_columns = required_columns - set(df.columns)
+    # Required columns
+    required_columns = {"lot #", "job name", "job number", "battery"}
+    missing_columns = required_columns - set(df.columns)
 
-        if missing_columns:
-            st.error(f"⚠️ Missing required columns: {', '.join(missing_columns)}. Please check your Excel file.")
-        else:
-            activities_dict = {}
+    if missing_columns:
+        st.error(f"⚠️ Missing required columns: {', '.join(missing_columns)}. Please check your Excel file.")
+    else:
+        activities_dict = {}
 
-            for index, row in df.iterrows():
-                lot_number = str(row["lot #"]).strip()
-                job_name = str(row["job name"]).strip().lower()
-                job_number = str(row["job number"]).strip()
-                battery_status = str(row["battery"]).strip().lower()
-                activity_key = f"{lot_number} - {job_name} - {job_number}"
+        for index, row in df.iterrows():
+            lot_number = str(row["lot #"]).strip()
+            job_name = str(row["job name"]).strip().lower()
+            job_number = str(row["job number"]).strip()
+            battery_status = str(row["battery"]).strip().lower()
+            activity_key = f"{lot_number} - {job_name} - {job_number}"
 
-                # Ensure job exists in the dictionary
-                if job_name in st.session_state.opportunity:
-                    materials = st.session_state.opportunity[job_name].copy()
-                else:
-                    materials = {}
+            # Ensure job exists in the dictionary
+            if job_name in st.session_state.opportunity:
+                materials = st.session_state.opportunity[job_name].copy()
+            else:
+                materials = {}
 
-                # Handle battery wire removal
-                if "battery_wire" in materials and battery_status != "yes":
-                    del materials["battery_wire"]
+            # Handle battery wire removal
+            if "battery_wire" in materials and battery_status != "yes":
+                del materials["battery_wire"]
 
-                activities_dict[activity_key] = materials
+            activities_dict[activity_key] = materials
 
-            # Display results
-            st.subheader("📋 Final Activities Dictionary")
-            st.json(activities_dict)
+        # Display results
+        st.subheader("📋 Final Activities Dictionary")
+        st.json(activities_dict)
 
-            st.success("✅ File processed successfully!")
+        # PDF Generation Button
+        if st.button("📄 Generate & Download PDF"):
+            pdf_buffer = generate_pdf(activities_dict)
+            st.download_button(
+                label="📥 Download PDF",
+                data=pdf_buffer,
+                file_name="activities_report.pdf",
+                mime="application/pdf"
+            )
 
-    except Exception as e:
-        st.error(f"⚠️ Error processing file: {str(e)}")
-
-st.info("Upload an Excel file to generate the activities dictionary.")
+        st.success("✅ File processed successfully!")

@@ -40,11 +40,12 @@ def load_opportunities():
         try:
             with open(OPPORTUNITY_FILE, "r") as f:
                 data = json.load(f)
-                if data:  # If the file is not empty, return data
+                if data and isinstance(data, dict):
                     return data
         except json.JSONDecodeError:
-            pass  # Corrupted file, fallback to defaults
-    # If file doesn't exist or is empty, use the new defaults and overwrite
+            pass  # If JSON is corrupted, overwrite it with defaults
+    
+    # Overwrite `opportunity.json` with new defaults
     save_opportunities(DEFAULT_OPPORTUNITIES)
     return DEFAULT_OPPORTUNITIES  
 
@@ -53,7 +54,7 @@ def save_opportunities(opportunities):
     with open(OPPORTUNITY_FILE, "w") as f:
         json.dump(opportunities, f, indent=4)
 
-# Function to generate a PDF
+# Function to generate a PDF report
 def generate_pdf(activities_dict):
     buffer = io.BytesIO()
     pdf = canvas.Canvas(buffer, pagesize=letter)
@@ -82,7 +83,6 @@ def generate_pdf(activities_dict):
     buffer.seek(0)
     return buffer
 
-# --- INITIALIZATION ---
 # Ensure session state is properly initialized with the updated opportunity dictionary
 if "opportunity" not in st.session_state:
     st.session_state.opportunity = load_opportunities()

@@ -28,13 +28,15 @@ DEFAULT_OPPORTUNITIES = {
     "deauville 6339": {"10red": 150, "10blk": 150, "8grn": 100, "34flex": 100, "184cshld": 25, "sf1base": 2, "nailplt": 10, "34nstp": 25, "rom83": 50, "sf1dsa": 2},
     "ivy gate at farmstead": {"sf1hem": 1, "34nstp": 25, "nailplt": 10, "qfp100": 1, "sf1base": 1, "rom143": 25, "rom63": 25, "rom43": 35, "184cshld": 25, "34flex": 100, "8grn": 100, "10red": 100, "10blk": 100},
     "trilogy nevina": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "sf1base": 1, "nailplt": 10, "34nstp": 25, "rom83": 25, "sf1dsa": 1},
-    "Orchards at Copper Heights" : {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom43": 35, "rom63": 25, "rom143": 25, "sf1base": 1, "qfp100": 1, "nailplt": 10, "34nstp": 25, "sf1hem": 1},
-    "Orchard View" : {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom63": 75, "rom143": 25, "sf1base": 1, "qfp100": 1, "nailplt": 10, "34nstp": 25},
-    "Kings estates phase III": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom83": 25, "sf1base": 1, "nailplt": 10, "34nstp": 25, "sf1dsa": 1},
+    "orchards at copper heights" : {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom43": 35, "rom63": 25, "rom143": 25, "sf1base": 1, "qfp100": 1, "nailplt": 10, "34nstp": 25, "sf1hem": 1},
+    "orchard view" : {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom63": 75, "rom143": 25, "sf1base": 1, "qfp100": 1, "nailplt": 10, "34nstp": 25},
+    "kings estates phase iii": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom83": 25, "sf1base": 1, "nailplt": 10, "34nstp": 25, "sf1dsa": 1},
     "oakcrest": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom103": 25, "rom63": 50, "rom143": 25, "sf1base": 1, "qfp100": 1, "nailplt": 10, "34nstp": 25},
     "palm crossing tract 7093": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom83": 25, "sf1base": 1, "nailplt": 10, "34nstp": 25, "sf1dsa": 1},
     "citrea tract 6383": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom103": 50, "sf1base": 1, "nailplt": 10, "34nstp": 25},
     "ovation at riverstone": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom43": 35, "rom63": 25, "rom143": 25, "sf1base": 1, "qfp100": 1, "nailplt": 10, "34nstp": 25, "sf1hem": 1}    
+    "encore at riverstone": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom43": 35, "rom63": 25, "rom143": 25, "sf1base": 1, "qfp100": 1, "nailplt": 10, "34nstp": 25, "sf1hem": 1}    
+
 }
 
 # --- FUNCTIONS ---

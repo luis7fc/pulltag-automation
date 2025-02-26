@@ -4,6 +4,7 @@ import os
 import io
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+from datetime import datetime
 
 # Define the CSV file for storing opportunities
 OPPORTUNITY_FILE = "opportunity.csv"
@@ -215,3 +216,117 @@ if uploaded_file:
             st.download_button("📥 Download PDF", data=pdf_buffer, file_name="activities_report.pdf", mime="application/pdf")
 
         st.success("✅ File processed successfully!")
+
+# --- Hard-Coded Defaults ---
+DEFAULTS = {
+    "line_id": "IL",
+    "location": "FNOSolar",
+    "conversion_factor": 1,
+    "equipment_id": "",
+    "equipment_cost_code": "",  # Now blank
+    "category": "M",  # Now set to "M"
+    "requisition_number": "",  # Now blank
+}
+
+# --- Hardcoded Item Data (itemcode → {description, job_cost_code, unit_of_measure}) ---
+ITEM_DATA = {
+    "10BLK": {"description": "#10 AWG THHN Wire Black", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "10RED": {"description": "#10 AWG THHN Wire Red", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "10WHT": {"description": "#10 AWG THHN Wire White", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "6BLK": {"description": "#6 AWG THHN Wire Black", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "6GRN": {"description": "#6 AWG THHN Wire Green", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "6RED": {"description": "#6 AWG THHN Wire Red", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "6WHT": {"description": "#6 AWG THHN Wire White", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "8BLK": {"description": "#8 AWG THHN Wire Black", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "8GRN": {"description": "#8 AWG THHN Wire Green", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "8RED": {"description": "#8 AWG THHN Wire Red", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "8WHT": {"description": "#8 AWG THHN Wire White", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "184CSHLD": {"description": "#18/4c Shielded Wire, 500'", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "1FLEX": {"description": '1" Aluminum Flex/FMC', "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "ROM103": {"description": "Romex 10-3", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "ROM122": {"description": "Romex 12-2", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "ROM123": {"description": "Romex 12-3", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "ROM142": {"description": "Romex 14-2", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "ROM143": {"description": "Romex 14-3", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "ROM83": {"description": "Romex 8-3", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "34EMT": {"description": 'EMT 3/4" Unthreaded Conduit', "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "34FLEX": {"description": '3/4" Aluminum Flex/FMC', "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "34NSTP": {"description": '3/4" Nail Strap (galv J-Nail)', "job_cost_code": "BOS", "unit_of_measure": "EA"},
+    "NAILPLT": {"description": "Steel Nail Plate", "job_cost_code": "BOS", "unit_of_measure": "EA"},
+    "SF1BASE": {"description": 'Solar Sub Flashing 3/4", 15"x12", Galv', "job_cost_code": "BOS", "unit_of_measure": "EA"},
+    "SF1CMP": {"description": 'Solar Flashing 3/4" Galv 17" x 17", 2.5" Cone', "job_cost_code": "BOS", "unit_of_measure": "EA"},
+    "SF1DSA": {"description": 'Solar Flashing 3/4" DSAlum, 2.5" Cone', "job_cost_code": "BOS", "unit_of_measure": "EA"},
+    "SF1HEM": {"description": 'Solar Flashing 3/4" Galv Shake w/ Hem, 2.5" Cone', "job_cost_code": "BOS", "unit_of_measure": "EA"},
+    "QFP100": {"description": 'Quickflash P-100 1/2"-3/4" Cond', "job_cost_code": "BOS", "unit_of_measure": "EA"},
+    "QFP50": {"description": 'Quickflash P-50 1/2"-3/4" Cond', "job_cost_code": "BOS", "unit_of_measure": "EA"},
+    "4BLK": {"description": "#4 Black", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "4RED": {"description": "#4 Red", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "4WHT": {"description": "#4 White", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "ROM43": {"description": "Romex 4-3", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+    "ROM63": {"description": "Romex 6-3", "job_cost_code": "BOS", "unit_of_measure": "FT"},
+}
+
+
+# --- TXT File Generation Function ---
+def generate_sage_txt(activities_dict, defaults, item_data):
+    """
+    Generate a tab-delimited TXT string using the Sage criteria.
+    
+    - Extracts job number and lot number from activities_dict keys.
+    - Pulls item descriptions, job cost codes, and unit of measure from ITEM_DATA.
+    - Uses today's date as the issue date.
+    """
+    today_date = datetime.today().strftime("%m-%d-%y")  # Format: MM-DD-YY
+
+    header1 = f"I\tTest Import\t{today_date}\t{today_date}"
+    header2 = ";line ID\tlocation\titem code\tquantity\tunit of measure\tdescription\tconversion factor\tequipment id\tequipment cost code\tjob\tlot\tcost code\tcategory\trequisition number\tissue date"
+    lines = [header1, header2]
+
+    # Iterate over activities_dict and build data rows.
+    for key, materials in activities_dict.items():
+        try:
+            lot_number, job_name, job_number = key.split(" - ")
+        except ValueError:
+            continue  # Skip improperly formatted keys
+
+        for item_code, quantity in materials.items():
+            # Pull item details or use defaults if missing
+            item_details = item_data.get(item_code, {"description": "", "job_cost_code": "", "unit_of_measure": "EA"})
+            description = item_details["description"]
+            job_cost_code = item_details["job_cost_code"]
+            unit_of_measure = item_details["unit_of_measure"]
+
+            row = [
+                defaults["line_id"],
+                defaults["location"],
+                item_code,
+                str(quantity),
+                unit_of_measure,  # Now pulled from ITEM_DATA
+                description,
+                str(defaults["conversion_factor"]),
+                defaults["equipment_id"],
+                defaults["equipment_cost_code"],  # Now blank
+                job_number,       # Column J: Job number
+                lot_number,       # Column K: Lot number
+                job_cost_code,    # Column L: Job Cost Code
+                defaults["category"],  # Now "M"
+                defaults["requisition_number"],  # Now blank
+                today_date  # Issue Date = Date the report is generated
+            ]
+            lines.append("\t".join(row))
+    
+    return "\n".join(lines)
+
+# --- Example Integration in Your App ---
+
+# Simulated activities_dict (this would be generated from your uploaded Excel file)
+activities_dict = {
+    "123 - projectx - 456": {"10BLK": 100, "TES7600": 1},
+    "789 - projecty - 012": {"CH20": 1, "TESRSD": 5}
+}
+
+st.subheader("Generate TXT Output")
+if st.button("Generate & Download TXT"):
+    sage_txt = generate_sage_txt(activities_dict, DEFAULTS, ITEM_DATA)
+    st.download_button("Download TXT", data=sage_txt, file_name="sage_output.txt", mime="text/plain")
+

@@ -258,7 +258,7 @@ ITEM_DATA = {
     "34FLEX": {"description": '3/4" Aluminum Flex/FMC', "job_cost_code": "BOS", "unit_of_measure": "FT"},
     "34NSTP": {"description": '3/4" Nail Strap (galv J-Nail)', "job_cost_code": "BOS", "unit_of_measure": "EA"},
     "NAILPLT": {"description": "Steel Nail Plate", "job_cost_code": "BOS", "unit_of_measure": "EA"},
-    "SF1BASE": {"description": 'Solar Sub Flashing 3/4", 15"x12", Galv', "job_cost_code": "BOS", "unit_of_measure": "EA"},
+    "SF1BASE": {"description": 'Solar Sub Flashing 3/4, 15x12, Galv', "job_cost_code": "BOS", "unit_of_measure": "EA"},
     "SF1CMP": {"description": 'Solar Flashing 3/4" Galv 17" x 17", 2.5" Cone', "job_cost_code": "BOS", "unit_of_measure": "EA"},
     "SF1DSA": {"description": 'Solar Flashing 3/4" DSAlum, 2.5" Cone', "job_cost_code": "BOS", "unit_of_measure": "EA"},
     "SF1HEM": {"description": 'Solar Flashing 3/4" Galv Shake w/ Hem, 2.5" Cone', "job_cost_code": "BOS", "unit_of_measure": "EA"},

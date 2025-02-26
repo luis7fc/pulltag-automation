@@ -285,11 +285,9 @@ def generate_sage_txt(activities_dict, item_data):
     """
     today_date = datetime.today().strftime("%m-%d-%y")  # Format: MM-DD-YY
 
-    # Required blank lines and initial Sage headers
+    # Required initial Sage headers
     lines = [
-        ",,,,,\"\",,,,,,,,",  # Blank row
-        f"I,Test Import,{today_date},{today_date},,\"\",,,,,,,,",
-        ",,,,,\"\",,,,,,,,",  # Another blank row
+        f"I,Test Import,{today_date},{today_date},,\"\",,,,,,,,",  # Import header
         ";line ID,location,item code,quantity,unit of measure,\"description\",conversion factor,equipment id,equipment cost code,job,lot,cost code,category,requisition number,issue date"
     ]
 

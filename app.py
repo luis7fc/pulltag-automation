@@ -268,9 +268,9 @@ ITEM_DATA = {
 
 
 # --- TXT File Generation Function ---
-def generate_sage_txt(activities_dict, defaults, item_data):
+def generate_sage_txt(activities_dict, item_data):
     """
-    Generate a tab-delimited TXT string using the Sage criteria.
+    Generate a comma-separated TXT string using the Sage format.
     
     - Extracts job number and lot number from activities_dict keys.
     - Pulls item descriptions, job cost codes, and unit of measure from ITEM_DATA.
@@ -278,9 +278,13 @@ def generate_sage_txt(activities_dict, defaults, item_data):
     """
     today_date = datetime.today().strftime("%m-%d-%y")  # Format: MM-DD-YY
 
-    header1 = f"I\tTest Import\t{today_date}\t{today_date}"
-    header2 = ";line ID\tlocation\titem code\tquantity\tunit of measure\tdescription\tconversion factor\tequipment id\tequipment cost code\tjob\tlot\tcost code\tcategory\trequisition number\tissue date"
-    lines = [header1, header2]
+    # Required blank lines and initial Sage headers
+    lines = [
+        ",,,,,""",",,,,,,,,",  # Blank row
+        f"I,Test Import,{today_date},{today_date},,\"\",,,,,,,,",
+        ",,,,,""",",,,,,,,,",  # Another blank row
+        ";line ID,location,item code,quantity,unit of measure,\"description\",conversion factor,equipment id,equipment cost code,job,lot,cost code,category,requisition number,issue date"
+    ]
 
     # Iterate over activities_dict and build data rows.
     for key, materials in activities_dict.items():
@@ -290,36 +294,24 @@ def generate_sage_txt(activities_dict, defaults, item_data):
             continue  # Skip improperly formatted keys
 
         for item_code, quantity in materials.items():
-            # Pull item details or use defaults if missing
-            item_details = item_data.get(item_code, {"description": "", "job_cost_code": "", "unit_of_measure": "EA"})
+            # Pull item details from ITEM_DATA or set defaults if missing
+            item_details = item_data.get(item_code, {"description": "Unknown", "job_cost_code": "BOS", "unit_of_measure": "EA"})
             description = item_details["description"]
             job_cost_code = item_details["job_cost_code"]
             unit_of_measure = item_details["unit_of_measure"]
 
+            # Format the row properly with commas
             row = [
-                defaults["line_id"],
-                defaults["location"],
-                item_code,
-                str(quantity),
-                unit_of_measure,  # Now pulled from ITEM_DATA
-                description,
-                str(defaults["conversion_factor"]),
-                defaults["equipment_id"],
-                defaults["equipment_cost_code"],  # Now blank
-                job_number,       # Column J: Job number
-                lot_number,       # Column K: Lot number
-                job_cost_code,    # Column L: Job Cost Code
-                defaults["category"],  # Now "M"
-                defaults["requisition_number"],  # Now blank
-                today_date  # Issue Date = Date the report is generated
+                "IL", "FNOSolar", item_code, str(quantity), unit_of_measure,
+                f"\"{description}\"", "1", "", "", job_number, lot_number, job_cost_code, "M", "", today_date
             ]
-            lines.append("\t".join(row))
-    
+            lines.append(",".join(row))
+
     return "\n".join(lines)
 
 
+# --- Streamlit Button to Download TXT ---
 st.subheader("Generate TXT Output")
 if st.button("Generate & Download TXT"):
-    sage_txt = generate_sage_txt(activities_dict, DEFAULTS, ITEM_DATA)
+    sage_txt = generate_sage_txt(activities_dict, ITEM_DATA)
     st.download_button("Download TXT", data=sage_txt, file_name="sage_output.txt", mime="text/plain")
-

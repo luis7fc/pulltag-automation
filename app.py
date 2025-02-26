@@ -267,6 +267,7 @@ ITEM_DATA = {
 }
 
 
+
 # --- TXT File Generation Function ---
 def generate_sage_txt(activities_dict, item_data):
     """
@@ -280,9 +281,9 @@ def generate_sage_txt(activities_dict, item_data):
 
     # Required blank lines and initial Sage headers
     lines = [
-        ",,,,,""",",,,,,,,,",  # Blank row
+        ",,,,,\"\",,,,,,,,",  # Blank row
         f"I,Test Import,{today_date},{today_date},,\"\",,,,,,,,",
-        ",,,,,""",",,,,,,,,",  # Another blank row
+        ",,,,,\"\",,,,,,,,",  # Another blank row
         ";line ID,location,item code,quantity,unit of measure,\"description\",conversion factor,equipment id,equipment cost code,job,lot,cost code,category,requisition number,issue date"
     ]
 
@@ -300,7 +301,7 @@ def generate_sage_txt(activities_dict, item_data):
             job_cost_code = item_details["job_cost_code"]
             unit_of_measure = item_details["unit_of_measure"]
 
-            # Format the row properly with commas
+            # Format the row properly with commas and quoted descriptions
             row = [
                 "IL", "FNOSolar", item_code, str(quantity), unit_of_measure,
                 f"\"{description}\"", "1", "", "", job_number, lot_number, job_cost_code, "M", "", today_date
@@ -310,8 +311,15 @@ def generate_sage_txt(activities_dict, item_data):
     return "\n".join(lines)
 
 
-# --- Streamlit Button to Download TXT ---
+# --- Streamlit App UI ---
+st.title("📂 Sage TXT Export Tool")
+
 st.subheader("Generate TXT Output")
 if st.button("Generate & Download TXT"):
     sage_txt = generate_sage_txt(activities_dict, ITEM_DATA)
-    st.download_button("Download TXT", data=sage_txt, file_name="sage_output.txt", mime="text/plain")
+    st.download_button("📥 Download TXT", data=sage_txt, file_name="sage_output.txt", mime="text/plain")
+
+st.success("✅ TXT file successfully generated in Sage format!")
+
+
+ 

@@ -12,7 +12,8 @@ OPPORTUNITY_FILE = "opportunity.csv"
 
 # Default opportunities (ensuring first-time app startup loads correctly)
 DEFAULT_OPPORTUNITIES = {
-    "magnolia": {"10red": 125, "10blk": 100, "8grn": 100, "34flex": 100, "rom103": 50, "sf1base": 1, "sf1hem": 1},
+    "magnolia at riverstone": {"10red": 125, "10blk": 100, "8grn": 100, "34flex": 100, "rom83": 50, "sf1base": 1, "sf1hem": 1, "34nstp":25, "nailplt":10},
+    "sunnyside ii": {"10red": 125, "10blk": 100, "8grn": 100, "34flex": 100, "rom83": 50, "sf1base": 1, "qfp100":1, "34nstp":25, "nailplt":10},
     "mission oaks": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "rom103": 50, "sf1base": 1},
     "abbey court ii": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 100, "rom43": 35, "rom63": 25, "rom143": 25, "sf1base": 1, "qfp100": 1, "nailplt": 10, "34nstp": 25},
     "alder creek ii": {"34nstp": 25, "nailplt": 10, "qfp100": 1, "sf1base": 1, "rom143": 25, "rom43": 35, "rom63": 25, "184cshld": 25, "34flex": 100, "8grn": 100, "10blk": 100, "10red": 100},
@@ -21,6 +22,9 @@ DEFAULT_OPPORTUNITIES = {
     "santa fe trail": {"10blk": 100, "10red": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom43": 35, "rom63": 25, "rom143": 25, "sf1base": 1, "qfp100": 1, "nailplt": 10, "34nstp": 25},
     "serenade": {"10blk": 100, "10red": 100, "8grn": 100, "184cshld": 25, "34flex": 100, "rom43": 35, "rom63": 25, "rom143": 25, "sf1base": 1, "qfp100": 1, "nailplt": 10, "34nstp": 25},
     "victory oaks": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom43": 35, "rom63": 25, "rom143": 25, "sf1base": 1, "qfp100": 1, "nailplt": 10, "34nstp": 25},
+    "elev8ions at tract 6205":{"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom83": 25, "sf1base": 1, "nailplt": 10, "34nstp": 25, "sf1dsa": 1},
+    "cottonwoord creek at the preserve":{"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom43": 35, "rom63": 50, "rom143": 50, "sf1base": 2, "qfp100": 1, "nailplt": 10, "34nstp": 25, "sf1hem": 2},
+    "diamond oaks":{"10red": 100, "10blk": 100, "8grn": 100, "34flex": 50, "184cshld": 25, "1flex": 50, "6red": 50, "6blk": 50, "6wht": 50, "sf1base": 1, "qfp100": 1, "nailplt": 10, "34nstp": 25},
     "wild oak": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "rom43": 35, "rom63": 25, "rom143": 25, "184cshld": 25, "sf1base": 1, "qfp100": 1, "34nstp": 25, "nailplt": 10},
     "abbey park": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom43": 35, "rom63": 50, "rom143": 50, "sf1base": 2, "qfp100": 1, "nailplt": 10, "34nstp": 10, "sf1hem": 2},
     "acres at copper heights": {"10red": 100, "10blk": 100, "8grn": 100, "34flex": 100, "184cshld": 25, "rom43": 35, "rom63": 25, "rom143": 25, "sf1base": 1, "qfp100": 1, "nailplt": 10, "34nstp": 25, "sf1hem": 1},

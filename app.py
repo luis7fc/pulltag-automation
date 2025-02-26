@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import os
 import io
+import datetime
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from datetime import datetime
@@ -268,6 +269,7 @@ ITEM_DATA = {
 
 
 
+
 # --- TXT File Generation Function ---
 def generate_sage_txt(activities_dict, item_data):
     """
@@ -295,15 +297,18 @@ def generate_sage_txt(activities_dict, item_data):
             continue  # Skip improperly formatted keys
 
         for item_code, quantity in materials.items():
+            # Convert item_code to uppercase to match ITEM_DATA keys
+            item_code_upper = item_code.upper()
+
             # Pull item details from ITEM_DATA or set defaults if missing
-            item_details = item_data.get(item_code, {"description": "Unknown", "job_cost_code": "BOS", "unit_of_measure": "EA"})
+            item_details = item_data.get(item_code_upper, {"description": "Unknown", "job_cost_code": "BOS", "unit_of_measure": "EA"})
             description = item_details["description"]
             job_cost_code = item_details["job_cost_code"]
             unit_of_measure = item_details["unit_of_measure"]
 
             # Format the row properly with commas and quoted descriptions
             row = [
-                "IL", "FNOSolar", item_code, str(quantity), unit_of_measure,
+                "IL", "FNOSolar", item_code_upper, str(quantity), unit_of_measure,
                 f"\"{description}\"", "1", "", "", job_number, lot_number, job_cost_code, "M", "", today_date
             ]
             lines.append(",".join(row))
@@ -320,6 +325,5 @@ if st.button("Generate & Download TXT"):
     st.download_button("📥 Download TXT", data=sage_txt, file_name="sage_output.txt", mime="text/plain")
 
 st.success("✅ TXT file successfully generated in Sage format!")
-
 
  

@@ -317,13 +317,6 @@ def generate_sage_txt(activities_dict, defaults, item_data):
     
     return "\n".join(lines)
 
-# --- Example Integration in Your App ---
-
-# Simulated activities_dict (this would be generated from your uploaded Excel file)
-activities_dict = {
-    "123 - projectx - 456": {"10BLK": 100, "TES7600": 1},
-    "789 - projecty - 012": {"CH20": 1, "TESRSD": 5}
-}
 
 st.subheader("Generate TXT Output")
 if st.button("Generate & Download TXT"):
